@@ -1,51 +1,41 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * TrainManagementApp.java
- * UC2: Add Passenger Bogies to Train
+ * UC3: Track Unique Bogie IDs using HashSet
  */
 public class TrainManagementApp {
 
     public static void main(String[] args) {
-        // --- UC1 Logic (Initialization) ---
-        List<String> passengerBogies = new ArrayList<>();
-
-        // --- UC2 Logic (Operations) ---
         System.out.println("==========================================");
-        System.out.println("  UC2 - Add Passenger Bogies to Train");
+        System.out.println("      UC3 - Track Unique Bogie IDs");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Adding Bogies
-        // The add() method appends elements to the end of the list
-        passengerBogies.add("Sleeper");
-        passengerBogies.add("AC Chair");
-        passengerBogies.add("First Class");
+        // 1. Initialize a Set for Unique Bogie IDs
+        // HashSet is chosen because it automatically handles uniqueness validation.
+        Set<String> bogieIDs = new HashSet<>();
 
-        System.out.println("After Adding Bogies:");
-        System.out.println("Passenger Bogies : " + passengerBogies);
+        // 2. Inserting IDs (including a duplicate to test validation)
+        bogieIDs.add("BG101");
+        bogieIDs.add("矢BG102");
+        bogieIDs.add("BG103");
+        bogieIDs.add("BG104");
+
+        // Attempting to add a duplicate ID
+        bogieIDs.add("BG101");
+
+        // 3. Display IDs after insertion
+        System.out.println("Bogie IDs After Insertion:");
+        System.out.println(bogieIDs);
         System.out.println();
 
-        // 2. Removing a Bogie
-        // The remove() method finds the first occurrence of the object and deletes it
-        passengerBogies.remove("AC Chair");
-
-        System.out.println("After Removing 'AC Chair':");
-        System.out.println("Passenger Bogies : " + passengerBogies);
+        // 4. Important Note on Set Behavior
+        System.out.println("Note:");
+        System.out.println("Duplicates are automatically ignored by HashSet.");
         System.out.println();
 
-        // 3. Checking for existence
-        // The contains() method returns a boolean (true/false)
-        System.out.println("Checking if 'Sleeper' exists:");
-        boolean hasSleeper = passengerBogies.contains("Sleeper");
-        System.out.println("Contains Sleeper? : " + hasSleeper);
-        System.out.println();
-
-        // 4. Final Summary
-        System.out.println("Final Train Passenger Consist:");
-        System.out.println(passengerBogies);
-        System.out.println();
-        System.out.println("UC2 operations completed successfully...");
+        System.out.println("UC3 uniqueness validation completed...");
     }
 }
