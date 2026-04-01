@@ -1,50 +1,43 @@
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * TrainManagementApp.java
- * UC4: Maintain Ordered Bogie Consist using LinkedList
+ * UC5: Preserve Insertion Order of Bogies using LinkedHashSet
  */
 public class TrainManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC4 - Maintain Ordered Bogie Consist");
+        System.out.println("   UC5 - Preserve Insertion Order of Bogies");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Initialize the consist using LinkedList
-        // LinkedList is ideal for sequential operations like a train line.
-        LinkedList<String> consist = new LinkedList<>();
+        // 1. Initialize the formation using LinkedHashSet
+        // This collection maintains a doubly-linked list running through its items
+        // to preserve the order of insertion.
+        Set<String> formation = new LinkedHashSet<>();
 
-        // 2. Setting the initial consist
-        consist.add("Engine");
-        consist.add("Sleeper");
-        consist.add("AC");
-        consist.add("Cargo");
-        consist.add("Guard");
+        // 2. Attaching bogies in a specific sequence
+        formation.add("Engine");
+        formation.add("Sleeper");
+        formation.add("Cargo");
+        formation.add("Guard");
 
-        System.out.println("Initial Train Consist:");
-        System.out.println(consist);
+        // 3. Attempting to attach a duplicate bogie
+        // The LinkedHashSet will recognize "Sleeper" is already present and ignore it.
+        formation.add("Sleeper");
+
+        // 4. Display the Final Train Formation
+        System.out.println("Final Train Formation:");
+        System.out.println(formation);
         System.out.println();
 
-        // 3. Inserting at a specific position (Index 2)
-        // Remember: Java lists use 0-based indexing.
-        // Position 2 means it will become the 3rd element.
-        consist.add(2, "Pantry Car");
-
-        System.out.println("After Inserting 'Pantry Car' at position 2:");
-        System.out.println(consist);
+        // 5. Note on behavior
+        System.out.println("Note:");
+        System.out.println("LinkedHashSet preserves insertion order and removes duplicates automatically.");
         System.out.println();
 
-        // 4. Removing First and Last Bogies
-        // LinkedList provides specific methods for ends of the list
-        consist.removeFirst(); // Removes Engine
-        consist.removeLast();  // Removes Guard
-
-        System.out.println("After Removing First and Last Bogie:");
-        System.out.println(consist);
-        System.out.println();
-
-        System.out.println("UC4 ordered consist operations completed...");
+        System.out.println("UC5 formation setup completed...");
     }
 }
