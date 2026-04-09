@@ -3,47 +3,44 @@ import java.util.stream.Collectors;
 
 /**
  * TrainManagementApp.java
- * UC8: Filter Passenger Bogies Using Streams
+ * UC9: Group Bogies by Type (Collectors.groupingBy)
  */
 public class TrainManagementApp {
 
     public static void main(String[] args) {
-        System.out.println("=============s=============================");
-        System.out.println("   UC8 - Filter Passenger Bogies (Streams)");
+        System.out.println("==========================================");
+        System.out.println("   UC9 - Group Bogies by Type (groupingBy)");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Initial Bogie Data (Reusing types from UC7)
-        Map<String, Integer> bogieMap = new HashMap<>();
-        bogieMap.put("Sleeper", 72);
-        bogieMap.put("AC Chair", 56);
-        bogieMap.put("First Class", 24);
-        bogieMap.put("General", 90);
+        // 1. Initial Flat List of Bogies
+        // We include duplicates of types to see the grouping in action
+        List<String> bogieList = Arrays.asList(
+                "Sleeper", "AC Chair", "Sleeper", "First Class", "AC Chair", "Sleeper"
+        );
 
-        System.out.println("Original Bogie List:");
-        bogieMap.forEach((name, cap) -> System.out.println(name + " (Capacity: " + cap + ")"));
+        System.out.println("Flat Bogie List (Before Grouping):");
+        System.out.println(bogieList);
         System.out.println();
 
-        // 2. Stream Pipeline: Filter and Collect
-        // We filter for high-capacity bogies (Capacity > 60)
-        int threshold = 60;
-        List<String> highCapacityBogies = bogieMap.entrySet().stream()
-                .filter(entry -> entry.getValue() > threshold) // The condition (Lambda)
-                .map(Map.Entry::getKey)                       // Transform entry to just the name
-                .collect(Collectors.toList());                // Terminate and store in a new list
+        // 2. Stream Pipeline: Grouping
+        // This transforms List<String> into Map<String, List<String>>
+        Map<String, List<String>> groupedBogies = bogieList.stream()
+                .collect(Collectors.groupingBy(bogie -> bogie));
 
-        // 3. Display Results
-        System.out.println("Filtering Bogies with Capacity > " + threshold + "...");
-        if (highCapacityBogies.isEmpty()) {
-            System.out.println("No bogies match the criteria.");
-        } else {
-            System.out.println("High-Capacity Bogies: " + highCapacityBogies);
-        }
+        // 3. Display Structured Grouping Result
+        System.out.println("Grouped Bogie Formation:");
+        groupedBogies.forEach((type, list) -> {
+            System.out.println(type + " Count (" + list.size() + ") -> " + list);
+        });
 
-        // 4. Verify Integrity
+        // 4. Verification of Requirements
         System.out.println();
         System.out.println("Verification:");
-        System.out.println("Original list count: " + bogieMap.size());
-        System.out.println("UC8 filtering operations completed successfully...");
+        System.out.println("Original list integrity maintained. Size: " + bogieList.size());
+        System.out.println("Total groups created: " + groupedBogies.size());
+
+        System.out.println();
+        System.out.println("UC9 formation setup completed...");
     }
 }
