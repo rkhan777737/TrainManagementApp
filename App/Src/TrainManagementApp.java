@@ -1,47 +1,49 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * TrainManagementApp.java
- * UC7: Sort Bogies by Capacity using Comparator
+ * UC8: Filter Passenger Bogies Using Streams
  */
 public class TrainManagementApp {
 
     public static void main(String[] args) {
-        System.out.println("==========================================");
-        System.out.println("   UC7 - Sort Bogies by Capacity (Comparator)");
+        System.out.println("=============s=============================");
+        System.out.println("   UC8 - Filter Passenger Bogies (Streams)");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Initialize Map with data
-        Map<String, Integer> bogieCapacities = new LinkedHashMap<>();
-        bogieCapacities.put("Sleeper", 72);
-        bogieCapacities.put("AC Chair", 56);
-        bogieCapacities.put("First Class", 24);
-        bogieCapacities.put("General", 90);
+        // 1. Initial Bogie Data (Reusing types from UC7)
+        Map<String, Integer> bogieMap = new HashMap<>();
+        bogieMap.put("Sleeper", 72);
+        bogieMap.put("AC Chair", 56);
+        bogieMap.put("First Class", 24);
+        bogieMap.put("General", 90);
 
-        System.out.println("Before Sorting:");
-        bogieCapacities.forEach((k, v) -> System.out.println(k + " -> " + v));
+        System.out.println("Original Bogie List:");
+        bogieMap.forEach((name, cap) -> System.out.println(name + " (Capacity: " + cap + ")"));
         System.out.println();
 
-        // 2. Convert Map entries to a List for sorting
-        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(bogieCapacities.entrySet());
+        // 2. Stream Pipeline: Filter and Collect
+        // We filter for high-capacity bogies (Capacity > 60)
+        int threshold = 60;
+        List<String> highCapacityBogies = bogieMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > threshold) // The condition (Lambda)
+                .map(Map.Entry::getKey)                       // Transform entry to just the name
+                .collect(Collectors.toList());                // Terminate and store in a new list
 
-        // 3. Sort the list using a Comparator
-        // We compare the 'Value' (Integer capacity) of each entry
-        Collections.sort(entryList, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
-                return e1.getValue().compareTo(e2.getValue());
-            }
-        });
-
-        // 4. Display sorted results
-        System.out.println("After Sorting by Capacity:");
-        for (Map.Entry<String, Integer> entry : entryList) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        // 3. Display Results
+        System.out.println("Filtering Bogies with Capacity > " + threshold + "...");
+        if (highCapacityBogies.isEmpty()) {
+            System.out.println("No bogies match the criteria.");
+        } else {
+            System.out.println("High-Capacity Bogies: " + highCapacityBogies);
         }
 
+        // 4. Verify Integrity
         System.out.println();
-        System.out.println("UC7 sorting completed...");
+        System.out.println("Verification:");
+        System.out.println("Original list count: " + bogieMap.size());
+        System.out.println("UC8 filtering operations completed successfully...");
     }
 }
