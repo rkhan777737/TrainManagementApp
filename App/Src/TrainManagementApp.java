@@ -1,47 +1,48 @@
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * TrainManagementApp.java
- * UC10: Count Total Seats in Train using reduce()
+ * UC11: Validate Train ID & Cargo Codes using Regex
  */
 public class TrainManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC10 - Count Total Seats (reduce)");
+        System.out.println("   UC11 - Validate Train ID & Cargo Codes");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Setup Bogie Data (Reusing the mapping from UC6/7)
-        Map<String, Integer> bogieCapacities = new LinkedHashMap<>();
-        bogieCapacities.put("Sleeper", 72);
-        bogieCapacities.put("AC Chair", 56);
-        bogieCapacities.put("First Class", 24);
-        bogieCapacities.put("General", 90);
+        // 1. Define Regex Patterns
+        // TRN- followed by exactly 4 digits
+        String trainIdRegex = "TRN-\\d{4}";
+        // PET- followed by exactly 2 uppercase letters
+        String cargoCodeRegex = "PET-[A-Z]{2}";
 
-        System.out.println("Current Bogie Capacities:");
-        bogieCapacities.forEach((type, cap) -> System.out.println(type + ": " + cap + " seats"));
+        // 2. Compile Patterns
+        Pattern trainIdPattern = Pattern.compile(trainIdRegex);
+        Pattern cargoCodePattern = Pattern.compile(cargoCodeRegex);
+
+        // 3. Test Cases (Sample Inputs)
+        String[] testTrainIds = {"TRN-1234", "TRAIN12", "TRN-123", "TRN-12345"};
+        String[] testCargoCodes = {"PET-AB", "PET-ab", "PET123", "PET-XY"};
+
+        // 4. Validate Train IDs
+        System.out.println("--- Train ID Validation ---");
+        for (String id : testTrainIds) {
+            Matcher matcher = trainIdPattern.matcher(id);
+            System.out.println("Input: " + id + " -> Valid: " + matcher.matches());
+        }
         System.out.println();
 
-        // 2. Stream Pipeline: Map and Reduce
-        // - stream(): Convert the values (capacities) to a stream
-        // - reduce(identity, accumulator): 0 is the starting point, Integer::sum adds them up
-        int totalSeats = bogieCapacities.values().stream()
-                .reduce(0, Integer::sum);
-
-        // 3. Display Aggregated Result
-        System.out.println("------------------------------------------");
-        System.out.println("Total Seating Capacity of Train: " + totalSeats);
-        System.out.println("------------------------------------------");
-
-        // 4. Verification for Test Cases
-        System.out.println();
-        System.out.println("Verification:");
-        System.out.println("Aggregation logic: Correct (72 + 56 + 24 + 90 = " + (72+56+24+90) + ")");
-        System.out.println("Empty list handling check: " + (new ArrayList<Integer>().stream().reduce(0, Integer::sum)));
+        // 5. Validate Cargo Codes
+        System.out.println("--- Cargo Code Validation ---");
+        for (String code : testCargoCodes) {
+            Matcher matcher = cargoCodePattern.matcher(code);
+            System.out.println("Input: " + code + " -> Valid: " + matcher.matches());
+        }
 
         System.out.println();
-        System.out.println("UC10 aggregation completed successfully...");
+        System.out.println("UC11 validation logic completed successfully...");
     }
 }
