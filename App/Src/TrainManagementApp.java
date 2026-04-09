@@ -1,48 +1,67 @@
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * TrainManagementApp.java
- * UC11: Validate Train ID & Cargo Codes using Regex
+ * UC12: Safety Compliance Check for Goods Bogies
  */
 public class TrainManagementApp {
 
+    // Simple helper class to represent a Goods Bogie
+    static class GoodsBogie {
+        String type;
+        String cargo;
+
+        GoodsBogie(String type, String cargo) {
+            this.type = type;
+            this.cargo = cargo;
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC11 - Validate Train ID & Cargo Codes");
+        System.out.println("   UC12 - Safety Compliance Check");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Define Regex Patterns
-        // TRN- followed by exactly 4 digits
-        String trainIdRegex = "TRN-\\d{4}";
-        // PET- followed by exactly 2 uppercase letters
-        String cargoCodeRegex = "PET-[A-Z]{2}";
+        // 1. Prepare a list of Goods Bogies
+        List<GoodsBogie> goodsConsist = new ArrayList<>();
+        goodsConsist.add(new GoodsBogie("Rectangular", "Coal"));
+        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        goodsConsist.add(new GoodsBogie("Rectangular", "Grain"));
 
-        // 2. Compile Patterns
-        Pattern trainIdPattern = Pattern.compile(trainIdRegex);
-        Pattern cargoCodePattern = Pattern.compile(cargoCodeRegex);
+        // 2. Define the Safety Rule using a Stream
+        // Rule: IF type is Cylindrical, THEN cargo MUST BE Petroleum.
+        // allMatch returns true only if EVERY bogie satisfies this condition.
+        boolean isSafe = goodsConsist.stream().allMatch(bogie -> {
+            if (bogie.type.equals("Cylindrical")) {
+                return bogie.cargo.equals("Petroleum");
+            }
+            return true; // Non-cylindrical bogies are safe by default here
+        });
 
-        // 3. Test Cases (Sample Inputs)
-        String[] testTrainIds = {"TRN-1234", "TRAIN12", "TRN-123", "TRN-12345"};
-        String[] testCargoCodes = {"PET-AB", "PET-ab", "PET123", "PET-XY"};
+        // 3. Display Results
+        System.out.println("Analyzing " + goodsConsist.size() + " goods bogies...");
+        System.out.println("Safety Compliance Status: " + (isSafe ? "PASS" : "FAIL"));
 
-        // 4. Validate Train IDs
-        System.out.println("--- Train ID Validation ---");
-        for (String id : testTrainIds) {
-            Matcher matcher = trainIdPattern.matcher(id);
-            System.out.println("Input: " + id + " -> Valid: " + matcher.matches());
-        }
-        System.out.println();
-
-        // 5. Validate Cargo Codes
-        System.out.println("--- Cargo Code Validation ---");
-        for (String code : testCargoCodes) {
-            Matcher matcher = cargoCodePattern.matcher(code);
-            System.out.println("Input: " + code + " -> Valid: " + matcher.matches());
+        if (isSafe) {
+            System.out.println("Status: All cylindrical bogies are carrying safe cargo.");
+        } else {
+            System.out.println("ALERT: Safety violation detected! Check cargo assignments.");
         }
 
+        // 4. Test Case: Invalid Formation
+        System.out.println("\n--- Testing Invalid Formation ---");
+        List<GoodsBogie> unsafeConsist = Arrays.asList(
+                new GoodsBogie("Cylindrical", "Petroleum"),
+                new GoodsBogie("Cylindrical", "Coal") // VIOLATION!
+        );
+
+        boolean secondCheck = unsafeConsist.stream().allMatch(b ->
+                !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum")
+        );
+
+        System.out.println("Unsafe Consist Result: " + (secondCheck ? "PASS" : "FAIL"));
         System.out.println();
-        System.out.println("UC11 validation logic completed successfully...");
+        System.out.println("UC12 safety check completed successfully...");
     }
 }
