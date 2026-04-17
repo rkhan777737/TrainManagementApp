@@ -2,45 +2,32 @@ import java.util.Arrays;
 
 /**
  * TrainManagementApp.java
- * UC16: Manual Sorting using Bubble Sort Algorithm
+ * UC17: Sorting Bogie Names Using built-in Arrays.sort()
  */
-public class TrainManagementApp{
+public class TrainManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC16 - Manual Sorting (Bubble Sort)");
+        System.out.println("   UC17 - Alphabetical Sorting (Arrays.sort)");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Array of passenger bogie capacities
-        int[] capacities = {72, 56, 24, 70, 60};
+        // 1. Input: Array of bogie type names
+        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
 
-        System.out.println("Capacities Before Sorting:");
-        System.out.println(Arrays.toString(capacities));
+        System.out.println("Bogie Names Before Sorting:");
+        System.out.println(Arrays.toString(bogieNames));
         System.out.println();
 
-        // 2. Bubble Sort Algorithm
-        // Outer loop: Controls the number of passes
-        for (int i = 0; i < capacities.length - 1; i++) {
+        // 2. Built-in Sorting
+        // This replaces the nested loops and manual swap logic from UC16
+        Arrays.sort(bogieNames);
 
-            // Inner loop: Performs adjacent comparisons
-            for (int j = 0; j < capacities.length - 1 - i; j++) {
-
-                // Compare adjacent elements
-                if (capacities[j] > capacities[j + 1]) {
-                    // SWAP logic: Use a temporary variable to switch positions
-                    int temp = capacities[j];
-                    capacities[j] = capacities[j + 1];
-                    capacities[j + 1] = temp;
-                }
-            }
-        }
-
-        // 3. Display Sorted Result
-        System.out.println("Capacities After Bubble Sort (Ascending):");
-        System.out.println(Arrays.toString(capacities));
+        // 3. Output: Display sorted array
+        System.out.println("Bogie Names After Arrays.sort() (Alphabetical):");
+        System.out.println(Arrays.toString(bogieNames));
 
         System.out.println();
-        System.out.println("UC16 algorithmic sorting completed successfully...");
+        System.out.println("UC17 optimized sorting completed successfully...");
     }
 }
