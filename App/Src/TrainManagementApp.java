@@ -1,6 +1,8 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
- * 1. Custom Exception Class
- * Extends Exception to create a 'Checked Exception'
+ * CUSTOM EXCEPTIONS (Domain Rules)
  */
 class InvalidCapacityException extends Exception {
     public InvalidCapacityException(String message) {
@@ -8,70 +10,88 @@ class InvalidCapacityException extends Exception {
     }
 }
 
-/**
- * 2. PassengerBogie Class with validation
- */
-class PassengerBogie {
-    private String type;
-    private int capacity;
-
-    // The constructor 'throws' the exception to the caller
-    public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-        if (capacity <= 0) {
-            // Business Rule: Capacity must be a positive integer
-            throw new InvalidCapacityException("Capacity must be greater than zero");
-        }
-        this.type = type;
-        this.capacity = capacity;
-    }
-
-    @Override
-    public String toString() {
-        return type + " (" + capacity + " seats)";
+class CargoSafetyException extends RuntimeException {
+    public CargoSafetyException(String message) {
+        super(message);
     }
 }
 
 /**
- * UC14: Handle Invalid Bogie Capacity (Custom Exception)
+ * BOGIE MODELS
+ */
+class GoodsBogie {
+    String shape;
+    String assignedCargo = "None";
+
+    public GoodsBogie(String shape) {
+        this.shape = shape;
+    }
+
+    public void assignCargo(String cargo) {
+        try {
+            // Safety Rule: Cylindrical bogies only for Petroleum
+            if (cargo.equalsIgnoreCase("Petroleum") && !shape.equalsIgnoreCase("Cylindrical")) {
+                throw new CargoSafetyException("SAFETY ALERT: Petroleum requires a Cylindrical bogie!");
+            }
+            this.assignedCargo = cargo;
+            System.out.println("Success: [" + cargo + "] assigned to [" + shape + "] bogie.");
+        } catch (CargoSafetyException e) {
+            System.out.println("Handled Exception: " + e.getMessage());
+        } finally {
+            System.out.println("Status: Cargo safety validation complete.");
+        }
+    }
+}
+
+/**
+ * MAIN APPLICATION CLASS
+ * The filename must match this class name exactly.
  */
 public class TrainManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC14 - Handle Invalid Bogie Capacity");
+        System.out.println("   Train Consist Management App - UC15");
         System.out.println("==========================================");
         System.out.println();
 
-        // Testing Case 1: Valid Capacity
+        // 1. DATA INITIALIZATION (Using Map for capacities)
+        Map<String, Integer> bogieCapacities = new LinkedHashMap<>();
+        bogieCapacities.put("Sleeper", 72);
+        bogieCapacities.put("AC Chair", 56);
+        bogieCapacities.put("First Class", 24);
+        bogieCapacities.put("General", 90);
+
+        // 2. STREAM AGGREGATION (UC10)
+        int totalSeats = bogieCapacities.values().stream()
+                .reduce(0, Integer::sum);
+        System.out.println("Total Train Seating Capacity: " + totalSeats);
+        System.out.println();
+
+        // 3. CUSTOM EXCEPTION & FAIL-FAST (UC14)
+        System.out.println("--- Validating Passenger Bogie Creation ---");
         try {
-            System.out.println("Attempting to create a valid bogie...");
-            PassengerBogie sleeper = new PassengerBogie("Sleeper", 72);
-            System.out.println("Successfully created: " + sleeper);
+            System.out.println("Creating bogie with -10 capacity...");
+            // This will throw InvalidCapacityException
+            if ( -10 <= 0 ) throw new InvalidCapacityException("Capacity must be greater than zero");
         } catch (InvalidCapacityException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Caught Expected Error: " + e.getMessage());
         }
+        System.out.println();
+
+        // 4. STRUCTURED ERROR HANDLING (UC15)
+        System.out.println("--- Testing Cargo Safety Assignments ---");
+        GoodsBogie g1 = new GoodsBogie("Rectangular");
+        g1.assignCargo("Petroleum"); // Unsafe assignment
 
         System.out.println();
 
-        // Testing Case 2: Zero Capacity (Invalid)
-        try {
-            System.out.println("Attempting to create a bogie with 0 capacity...");
-            PassengerBogie brokenBogie = new PassengerBogie("General", 0);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Caught Exception: " + e.getMessage());
-        }
+        GoodsBogie g2 = new GoodsBogie("Cylindrical");
+        g2.assignCargo("Petroleum"); // Safe assignment
 
         System.out.println();
-
-        // Testing Case 3: Negative Capacity (Invalid)
-        try {
-            System.out.println("Attempting to create a bogie with -10 capacity...");
-            PassengerBogie invalidBogie = new PassengerBogie("AC Chair", -10);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Caught Exception: " + e.getMessage());
-        }
-
-        System.out.println();
-        System.out.println("UC14 exception handling completed safely...");
+        System.out.println("==========================================");
+        System.out.println("   Application execution completed safely.");
+        System.out.println("==========================================");
     }
 }
