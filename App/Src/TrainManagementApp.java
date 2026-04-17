@@ -1,49 +1,63 @@
+import java.util.Arrays;
+
 public class TrainManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC18 - Linear Search for Bogie ID");
+        System.out.println("   UC19 - Binary Search (Optimized)");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Setup: Unsorted list of Bogie IDs
-        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        // 1. Precondition: Data MUST be sorted
+        String[] bogieIds = {"BG309", "BG101", "BG550", "BG205", "BG412"};
+        System.out.println("Original Data (Unsorted): " + Arrays.toString(bogieIds));
 
-        // 2. Define the Search Keys (Test Cases)
-        String searchKeyFound = "BG309";
-        String searchKeyNotFound = "BG999";
+        Arrays.sort(bogieIds);
+        System.out.println("Sorted Data (Requirement): " + Arrays.toString(bogieIds));
+        System.out.println();
 
-        // 3. Perform Linear Search
-        performLinearSearch(bogieIds, searchKeyFound);
-        performLinearSearch(bogieIds, searchKeyNotFound);
+        // 2. Test Cases
+        String searchFound = "BG309";
+        String searchNotFound = "BG999";
+
+        // 3. Perform Binary Search
+        performBinarySearch(bogieIds, searchFound);
+        performBinarySearch(bogieIds, searchNotFound);
 
         System.out.println();
-        System.out.println("UC18 search operations completed successfully...");
+        System.out.println("UC19 optimized search completed successfully...");
     }
 
     /**
-     * Logic for Linear Search
+     * Optimized Binary Search Logic
      */
-    public static void performLinearSearch(String[] arr, String key) {
-        boolean found = false;
-        int position = -1;
+    public static void performBinarySearch(String[] arr, String key) {
+        int low = 0;
+        int high = arr.length - 1;
+        int foundIndex = -1;
 
-        System.out.println("Searching for Bogie ID: " + key + "...");
+        System.out.println("Binary Searching for: " + key);
 
-        // Sequential Traversal: Check each element one by one
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i].equals(key)) {
-                found = true;
-                position = i;
-                break; // Early Termination: Stop as soon as we find it
+        while (low <= high) {
+            int mid = low + (high - low) / 2; // Calculate middle index
+
+            // Compare string lexicographically
+            int comparison = key.compareTo(arr[mid]);
+
+            if (comparison == 0) {
+                foundIndex = mid;
+                break; // Found!
+            } else if (comparison > 0) {
+                low = mid + 1; // Search the right half
+            } else {
+                high = mid - 1; // Search the left half
             }
         }
 
-        // 4. Display Results
-        if (found) {
-            System.out.println("SUCCESS: Bogie " + key + " found at index " + position + ".");
+        if (foundIndex != -1) {
+            System.out.println("RESULT: Bogie " + key + " found at sorted index " + foundIndex);
         } else {
-            System.out.println("FAILED: Bogie " + key + " was not found in the consist.");
+            System.out.println("RESULT: Bogie " + key + " not found in the system.");
         }
     }
 }
