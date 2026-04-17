@@ -1,63 +1,68 @@
 import java.util.Arrays;
 
+/**
+ * TrainManagementApp.java
+ * UC20: Defensive Programming - State Validation
+ */
 public class TrainManagementApp {
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC19 - Binary Search (Optimized)");
+        System.out.println("   UC20 - Defensive Search Validation");
         System.out.println("==========================================");
         System.out.println();
 
-        // 1. Precondition: Data MUST be sorted
-        String[] bogieIds = {"BG309", "BG101", "BG550", "BG205", "BG412"};
-        System.out.println("Original Data (Unsorted): " + Arrays.toString(bogieIds));
+        // 1. Scenario: Empty Train Consist
+        String[] emptyConsist = {};
 
-        Arrays.sort(bogieIds);
-        System.out.println("Sorted Data (Requirement): " + Arrays.toString(bogieIds));
-        System.out.println();
+        // 2. Scenario: Valid Train Consist
+        String[] validConsist = {"BG101", "BG205", "BG309"};
 
-        // 2. Test Cases
-        String searchFound = "BG309";
-        String searchNotFound = "BG999";
-
-        // 3. Perform Binary Search
-        performBinarySearch(bogieIds, searchFound);
-        performBinarySearch(bogieIds, searchNotFound);
+        // TEST 1: Attempt to search an empty consist
+        System.out.println("TEST 1: Searching on an EMPTY train...");
+        try {
+            validatedSearch(emptyConsist, "BG101");
+        } catch (IllegalStateException e) {
+            System.err.println("CRITICAL ERROR: " + e.getMessage());
+        }
 
         System.out.println();
-        System.out.println("UC19 optimized search completed successfully...");
+
+        // TEST 2: Attempt to search a valid consist
+        System.out.println("TEST 2: Searching on a VALID train...");
+        try {
+            validatedSearch(validConsist, "BG205");
+        } catch (IllegalStateException e) {
+            System.err.println("ERROR: " + e.getMessage());
+        }
+
+        System.out.println();
+        System.out.println("UC20 defensive operations completed successfully...");
     }
 
     /**
-     * Optimized Binary Search Logic
+     * Search method with State Validation
      */
-    public static void performBinarySearch(String[] arr, String key) {
-        int low = 0;
-        int high = arr.length - 1;
-        int foundIndex = -1;
+    public static void validatedSearch(String[] arr, String key) {
+        // DEFENSIVE STEP: State Validation
+        // If the train is empty, it's illegal to even attempt a search
+        if (arr == null || arr.length == 0) {
+            throw new IllegalStateException("Search Failed: No bogies found in the train formation.");
+        }
 
-        System.out.println("Binary Searching for: " + key);
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2; // Calculate middle index
-
-            // Compare string lexicographically
-            int comparison = key.compareTo(arr[mid]);
-
-            if (comparison == 0) {
-                foundIndex = mid;
-                break; // Found!
-            } else if (comparison > 0) {
-                low = mid + 1; // Search the right half
-            } else {
-                high = mid - 1; // Search the left half
+        // Standard Search Logic (Linear)
+        boolean found = false;
+        for (String bogie : arr) {
+            if (bogie.equals(key)) {
+                found = true;
+                break;
             }
         }
 
-        if (foundIndex != -1) {
-            System.out.println("RESULT: Bogie " + key + " found at sorted index " + foundIndex);
+        if (found) {
+            System.out.println("SUCCESS: Bogie [" + key + "] located in the consist.");
         } else {
-            System.out.println("RESULT: Bogie " + key + " not found in the system.");
+            System.out.println("RESULT: Bogie [" + key + "] not found in the current formation.");
         }
     }
 }
