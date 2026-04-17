@@ -1,77 +1,46 @@
-/**
- * 1. Custom Exception Class
- * Extends Exception to create a 'Checked Exception'
- */
-class InvalidCapacityException extends Exception {
-    public InvalidCapacityException(String message) {
-        super(message);
-    }
-}
+import java.util.Arrays;
 
 /**
- * 2. PassengerBogie Class with validation
+ * TrainManagementApp.java
+ * UC16: Manual Sorting using Bubble Sort Algorithm
  */
-class PassengerBogie {
-    private String type;
-    private int capacity;
-
-    // The constructor 'throws' the exception to the caller
-    public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-        if (capacity <= 0) {
-            // Business Rule: Capacity must be a positive integer
-            throw new InvalidCapacityException("Capacity must be greater than zero");
-        }
-        this.type = type;
-        this.capacity = capacity;
-    }
-
-    @Override
-    public String toString() {
-        return type + " (" + capacity + " seats)";
-    }
-}
-
-/**
- * UC14: Handle Invalid Bogie Capacity (Custom Exception)
- */
-public class TrainManagementApp {
+public class TrainManagementApp{
 
     public static void main(String[] args) {
         System.out.println("==========================================");
-        System.out.println("   UC14 - Handle Invalid Bogie Capacity");
+        System.out.println("   UC16 - Manual Sorting (Bubble Sort)");
         System.out.println("==========================================");
         System.out.println();
 
-        // Testing Case 1: Valid Capacity
-        try {
-            System.out.println("Attempting to create a valid bogie...");
-            PassengerBogie sleeper = new PassengerBogie("Sleeper", 72);
-            System.out.println("Successfully created: " + sleeper);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+        // 1. Array of passenger bogie capacities
+        int[] capacities = {72, 56, 24, 70, 60};
 
+        System.out.println("Capacities Before Sorting:");
+        System.out.println(Arrays.toString(capacities));
         System.out.println();
 
-        // Testing Case 2: Zero Capacity (Invalid)
-        try {
-            System.out.println("Attempting to create a bogie with 0 capacity...");
-            PassengerBogie brokenBogie = new PassengerBogie("General", 0);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Caught Exception: " + e.getMessage());
+        // 2. Bubble Sort Algorithm
+        // Outer loop: Controls the number of passes
+        for (int i = 0; i < capacities.length - 1; i++) {
+
+            // Inner loop: Performs adjacent comparisons
+            for (int j = 0; j < capacities.length - 1 - i; j++) {
+
+                // Compare adjacent elements
+                if (capacities[j] > capacities[j + 1]) {
+                    // SWAP logic: Use a temporary variable to switch positions
+                    int temp = capacities[j];
+                    capacities[j] = capacities[j + 1];
+                    capacities[j + 1] = temp;
+                }
+            }
         }
 
-        System.out.println();
-
-        // Testing Case 3: Negative Capacity (Invalid)
-        try {
-            System.out.println("Attempting to create a bogie with -10 capacity...");
-            PassengerBogie invalidBogie = new PassengerBogie("AC Chair", -10);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Caught Exception: " + e.getMessage());
-        }
+        // 3. Display Sorted Result
+        System.out.println("Capacities After Bubble Sort (Ascending):");
+        System.out.println(Arrays.toString(capacities));
 
         System.out.println();
-        System.out.println("UC14 exception handling completed safely...");
+        System.out.println("UC16 algorithmic sorting completed successfully...");
     }
 }
